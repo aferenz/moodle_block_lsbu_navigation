@@ -163,7 +163,7 @@ class block_lsbu_navigation_renderer extends plugin_renderer_base {
             }
             $content = html_writer::tag('li', $content, $liattr);
            
-            // djsomers - if in the context of a course - oinly show the active course
+            // djsomers - if in the context of a course - only show the active course
             global $COURSE;
             if($item->type === navigation_node::TYPE_COURSE && $COURSE->id!=1 && $COURSE->id!=$item->key) {
                

@@ -111,7 +111,7 @@ class block_lsbu_navigation_renderer extends plugin_renderer_base {
             } else if ($item->action instanceof action_link) {
                 //TODO: to be replaced with something else
                 $link = $item->action;
-                $link->text = $title; //$icon.$link->text;
+                $link->text = $icon.$link->text;
                 $link->attributes = array_merge($link->attributes, $attributes);
                 $content = $this->output->render($link);
                 $linkrendered = true;

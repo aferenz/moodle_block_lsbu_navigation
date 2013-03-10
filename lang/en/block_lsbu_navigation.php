@@ -37,3 +37,11 @@ $string['trimmoderight'] = 'Trim characters from the right';
 $string['trimmodeleft'] = 'Trim characters from the left';
 $string['trimmodecenter'] = 'Trim characters from the center';
 $string['trimlength'] = 'How many characters to trim to';
+
+// Personal Details section
+$string['personal_details'] ='Personal Details';
+$string['message_announcements'] = 'Message announcements';
+$string['faculty-offices-ahs'] = 'AHS Faculty Offices';
+$string['faculty-offices-bus'] = 'BUS Faculty Offices';
+$string['faculty-offices-esbe'] = 'ESBE Faculty Offices';
+$string['faculty-offices-hsc'] = 'HSC Faculty Offices';

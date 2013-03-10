@@ -41,13 +41,89 @@ class block_lsbu_navigation_renderer extends plugin_renderer_base {
      * @return string $content
      */
     public function navigation_tree(global_navigation $navigation, $expansionlimit, array $options = array()) {
+        global $COURSE, $USER;
+        
+        $content='';
+        
+        if($COURSE->id==1) {
+            // username firstname surname
+            $content = html_writer::start_tag('div', array('class'=>'username'));
+            $content .= $USER->username . ' (' . $USER->firstname . ', ' . $USER->lastname . ')';
+            $content .= html_writer::end_tag('div');
+            
+            // student id / staff number
+            $content .= html_writer::start_tag('div', array('class'=>'idnumber'));
+            $content .= $USER->idnumber;
+            $content .= html_writer::end_tag('div');
+            
+            if($this->isStudent($USER->username)==true) {
+        
+                // custom links
+                switch($USER->institution) {
+                    case "AHS" :
+                            $content .= html_writer::start_tag('p');
+                            $content .= html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-ahs', get_string('faculty-offices-ahs', 'block_lsbu_navigation'),array('class' => 'external_link'));
+                            $content .= html_writer::end_tag('p');
+                            break;
+                    case "BUS" :
+                            $content .= html_writer::start_tag('p');
+                            $content .= html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-bus', get_string('faculty-offices-bus', 'block_lsbu_navigation'),array('class' => 'external_link'));
+                            $content .= html_writer::end_tag('p');
+                            break;
+                    case "ESBE" :
+                            $content .= html_writer::start_tag('p');
+                            $content .= html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-esbe', get_string('faculty-offices-esbe', 'block_lsbu_navigation'),array('class' => 'external_link'));                            
+                            $content .= html_writer::end_tag('p');
+                            break;
+                    case "HSC" :
+                            $content .= html_writer::start_tag('p');
+                            $content .= html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-hsc', get_string('faculty-offices-hsc', 'block_lsbu_navigation'),array('class' => 'external_link'));                            
+                            $content .= html_writer::end_tag('p');
+                            break;
+                }
+                
+                // Messaging announcements– a Moodle link
+                $content .= html_writer::start_tag('p');
+                $content .= html_writer::link('/moodle/message/index.php?viewing=recentnotifications', get_string('message_announcements', 'block_lsbu_navigation'),array('class' => 'announcements'));
+                $content .= html_writer::end_tag('p');
+            } 
+        }
+        
         $navigation->add_class('navigation_node');
-        $content = $this->navigation_node(array($navigation), array('class'=>'block_tree list'), $expansionlimit, $options);
+        $content .= $this->navigation_node(array($navigation), array('class'=>'block_tree list'), $expansionlimit, $options);
         if (isset($navigation->id) && !is_numeric($navigation->id) && !empty($content)) {
             $content = $this->output->box($content, 'block_tree_box', $navigation->id);
         }
         return $content;
     }
+    
+    /**
+     *
+     * function to check if the logged in user is a student
+     *
+     */
+    private function isStudent($username)
+    {
+        global $DB;
+        
+        // TODO get database name from db extended config plugins setting
+        $sql="SELECT role FROM mis_lsbu.moodle_users where username='$username'";
+        
+        $roles = array();
+        
+        $roles = $DB->get_records_sql($sql ,null);
+        
+        foreach($roles as $role)
+        {
+            if(!empty($role->role))
+            {
+                return true;    
+            }
+        }
+        
+        return false;    
+    }
+    
      /**
      * Produces a navigation node for the navigation tree
      *

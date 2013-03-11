@@ -62,22 +62,22 @@ class block_lsbu_navigation_renderer extends plugin_renderer_base {
                 switch($USER->institution) {
                     case "AHS" :
                             $content .= html_writer::start_tag('p');
-                            $content .= html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-ahs', get_string('faculty-offices-ahs', 'block_lsbu_navigation'),array('class' => 'external_link'));
+                            $content .= html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-ahs', get_string('faculty-offices-ahs', 'block_lsbu_navigation'),array('class' => 'external_link', 'target' => '_blank'));
                             $content .= html_writer::end_tag('p');
                             break;
                     case "BUS" :
                             $content .= html_writer::start_tag('p');
-                            $content .= html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-bus', get_string('faculty-offices-bus', 'block_lsbu_navigation'),array('class' => 'external_link'));
+                            $content .= html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-bus', get_string('faculty-offices-bus', 'block_lsbu_navigation'),array('class' => 'external_link', 'target' => '_blank'));
                             $content .= html_writer::end_tag('p');
                             break;
                     case "ESBE" :
                             $content .= html_writer::start_tag('p');
-                            $content .= html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-esbe', get_string('faculty-offices-esbe', 'block_lsbu_navigation'),array('class' => 'external_link'));                            
+                            $content .= html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-esbe', get_string('faculty-offices-esbe', 'block_lsbu_navigation'),array('class' => 'external_link', 'target' => '_blank'));                            
                             $content .= html_writer::end_tag('p');
                             break;
                     case "HSC" :
                             $content .= html_writer::start_tag('p');
-                            $content .= html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-hsc', get_string('faculty-offices-hsc', 'block_lsbu_navigation'),array('class' => 'external_link'));                            
+                            $content .= html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-hsc', get_string('faculty-offices-hsc', 'block_lsbu_navigation'),array('class' => 'external_link', 'target' => '_blank'));                            
                             $content .= html_writer::end_tag('p');
                             break;
                 }

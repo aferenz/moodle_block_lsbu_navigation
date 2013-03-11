@@ -45,3 +45,4 @@ $string['faculty-offices-ahs'] = 'AHS Faculty Offices';
 $string['faculty-offices-bus'] = 'BUS Faculty Offices';
 $string['faculty-offices-esbe'] = 'ESBE Faculty Offices';
 $string['faculty-offices-hsc'] = 'HSC Faculty Offices';
+$string['faculty-offices-ldc'] = 'LDC Faculty Offices';

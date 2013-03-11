@@ -80,6 +80,11 @@ class block_lsbu_navigation_renderer extends plugin_renderer_base {
                             $content .= html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-hsc', get_string('faculty-offices-hsc', 'block_lsbu_navigation'),array('class' => 'external_link', 'target' => '_blank'));                            
                             $content .= html_writer::end_tag('p');
                             break;
+                    case "LDC" :
+                            $content .= html_writer::start_tag('p');
+                            $content .= html_writer::link('https://my.lsbu.ac.uk/page/communication-skills-development-contact-us', get_string('faculty-offices-ldc', 'block_lsbu_navigation'),array('class' => 'external_link', 'target' => '_blank'));                            
+                            $content .= html_writer::end_tag('p');
+                            break;
                 }
                 
                 // Messaging announcements– a Moodle link
@@ -195,7 +200,6 @@ class block_lsbu_navigation_renderer extends plugin_renderer_base {
                 // djsomers - use full name for course
                 //$content = html_writer::link($item->action, $content, $attributes);
                 $content = html_writer::link($item->action, $title, $attributes);
-                $content .= "<p>$title</p>";
             }
 
             // this applies to the li item which contains all child lists too

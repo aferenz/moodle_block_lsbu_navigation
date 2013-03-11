@@ -107,7 +107,7 @@ class block_lsbu_navigation_renderer extends plugin_renderer_base {
         global $DB;
         
         // TODO get database name from db extended config plugins setting
-        $sql="SELECT role FROM mis_lsbutest.moodle_users where username='$username'";
+        $sql="SELECT role FROM mis_lsbu.moodle_users where username='$username'";
         
         $roles = array();
         

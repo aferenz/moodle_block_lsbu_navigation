@@ -193,8 +193,8 @@ class block_lsbu_navigation_renderer extends plugin_renderer_base {
                 $linkrendered = true;
             } else if ($item->action instanceof moodle_url) {
                 // djsomers - use full name for course
-                $content = html_writer::link($item->action, $content, $attributes);
-                //$content = html_writer::link($item->action, $title, $attributes);
+                //$content = html_writer::link($item->action, $content, $attributes);
+                $content = html_writer::link($item->action, $title, $attributes);
             }
 
             // this applies to the li item which contains all child lists too
@@ -240,12 +240,12 @@ class block_lsbu_navigation_renderer extends plugin_renderer_base {
             $content = html_writer::tag('li', $content, $liattr);
            
             // djsomers - if in the context of a course - only show the active course
-            global $COURSE;
-            if($item->type === navigation_node::TYPE_COURSE && $COURSE->id!=1 && $COURSE->id!=$item->key) {
+            //global $COURSE;
+            //if($item->type === navigation_node::TYPE_COURSE && $COURSE->id!=1 && $COURSE->id!=$item->key) {
                
-            } else {
+            //} else {
                 $lis[] = $content;
-            }
+            //}
         }
        
         if (count($lis)) {

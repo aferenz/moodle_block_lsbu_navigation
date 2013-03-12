@@ -46,3 +46,4 @@ $string['faculty-offices-bus'] = 'BUS Faculty Offices';
 $string['faculty-offices-esbe'] = 'ESBE Faculty Offices';
 $string['faculty-offices-hsc'] = 'HSC Faculty Offices';
 $string['faculty-offices-ldc'] = 'LDC Faculty Offices';
+$string['missingamodule'] = 'Missing a module?';

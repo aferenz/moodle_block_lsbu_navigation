@@ -89,7 +89,7 @@ class block_lsbu_navigation_renderer extends plugin_renderer_base {
                 
                 // Messaging announcements– a Moodle link
                 $content .= html_writer::start_tag('p');
-                $content .= html_writer::link('/moodle/message/index.php?viewing=recentnotifications', get_string('message_announcements', 'block_lsbu_navigation'),array('class' => 'announcements'));
+                $content .= html_writer::link('/message/index.php?viewing=recentnotifications', get_string('message_announcements', 'block_lsbu_navigation'),array('class' => 'announcements'));
                 $content .= html_writer::end_tag('p');
             } 
         }

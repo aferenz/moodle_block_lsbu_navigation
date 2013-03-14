@@ -56,13 +56,17 @@ class block_lsbu_navigation extends block_base {
      * Set the initial properties for the block
      */
     function init() {
-        global $CFG, $COURSE;
+        global $CFG, $COURSE, $USER;
         $this->blockname = get_class($this);
         
-        if($COURSE->id==1) {
-            $this->title = get_string('personal_details','block_lsbu_navigation');
-        } else {
+        if(empty($USER->id)){
             $this->title = get_string('pluginname', $this->blockname);
+        } else {
+            if($COURSE->id==1) {
+                $this->title = get_string('personal_details','block_lsbu_navigation');
+            } else {
+                $this->title = get_string('pluginname', $this->blockname);
+            }
         }
     }
 

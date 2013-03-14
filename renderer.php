@@ -45,7 +45,7 @@ class block_lsbu_navigation_renderer extends plugin_renderer_base {
         
         $content='';
         
-        if($COURSE->id==1) {
+        if(!empty($USER->id) && $COURSE->id==1) {
             // username firstname surname
             $content = html_writer::start_tag('div', array('class'=>'username'));
             $content .= $USER->username . ' (' . $USER->firstname . ', ' . $USER->lastname . ')';

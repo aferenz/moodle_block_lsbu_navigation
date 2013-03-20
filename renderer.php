@@ -198,17 +198,17 @@ class block_lsbu_navigation_renderer extends plugin_renderer_base {
                 $linkrendered = true;
             } else if ($item->action instanceof moodle_url) {
                 // djsomers - use full name for course
-                // do not create a link from hidden items but still display the item
+                // for students do not create a link from hidden items but still display the item
                 // e.g. hidden courses are not navigable
-                if($item->hidden) {
+                if($item->hidden && $this->isStudent($USER->username)==true) {
                     $content = $title;
                 } else {
                     $content = html_writer::link($item->action, $title, $attributes);
                 }
             }
 
-            // djsomers - do not show children of hidden items (e.g. hidden courses)
-            if($item->hidden) {
+            // djsomers - for students do not show children of hidden items (e.g. hidden courses)
+            if($item->hidden && $this->isStudent($USER->username)==true) {
                 
             } else {
                 // this applies to the li item which contains all child lists too

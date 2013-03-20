@@ -209,7 +209,8 @@ class block_lsbu_navigation_renderer extends plugin_renderer_base {
 
             // djsomers - for students do not show children of hidden items (e.g. hidden courses)
             if($item->hidden && $this->isStudent($USER->username)==true) {
-                
+                $divattr=array();
+                $liattr=array();
             } else {
                 // this applies to the li item which contains all child lists too
                 $liclasses = array($item->get_css_type(), 'depth_'.$depth);
@@ -244,21 +245,24 @@ class block_lsbu_navigation_renderer extends plugin_renderer_base {
                 if (!empty($item->id)) {
                     $divattr['id'] = $item->id;
                 }
-                $content = html_writer::tag('p', $content, $divattr);
-                if ($isexpandable) {
-                    $content .= $this->navigation_node($item->children, array(), $expansionlimit, $options, $depth+1);
-                }
-                if (!empty($item->preceedwithhr) && $item->preceedwithhr===true) {
-                    $content = html_writer::empty_tag('hr') . $content;
-                }
             }
+                
+            $content = html_writer::tag('p', $content, $divattr);
+            
+            if ($isexpandable) {
+                $content .= $this->navigation_node($item->children, array(), $expansionlimit, $options, $depth+1);
+            }
+            if (!empty($item->preceedwithhr) && $item->preceedwithhr===true) {
+                $content = html_writer::empty_tag('hr') . $content;
+            }
+            
             
             $content = html_writer::tag('li', $content, $liattr);
            
             // djsomers - if in the context of a course - only show the active course
             global $COURSE;
             if($item->type === navigation_node::TYPE_COURSE && $COURSE->id!=1 && $COURSE->id!=$item->key) {
-               
+                // dont add this item   
             } else {
                 $lis[] = $content;
             }

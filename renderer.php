@@ -198,50 +198,61 @@ class block_lsbu_navigation_renderer extends plugin_renderer_base {
                 $linkrendered = true;
             } else if ($item->action instanceof moodle_url) {
                 // djsomers - use full name for course
-                //$content = html_writer::link($item->action, $content, $attributes);
-                $content = html_writer::link($item->action, $title, $attributes);
+                // do not create a link from hidden items but still display the item
+                // e.g. hidden courses are not navigable
+                if($item->hidden) {
+                    $content = $title;
+                } else {
+                    $content = html_writer::link($item->action, $title, $attributes);
+                }
             }
 
-            // this applies to the li item which contains all child lists too
-            $liclasses = array($item->get_css_type(), 'depth_'.$depth);
-            $liexpandable = array();
-            if ($item->has_children() && (!$item->forceopen || $item->collapse)) {
-                $liclasses[] = 'collapsed';
-            }
-            if ($isbranch) {
-                $liclasses[] = 'contains_branch';
-                $liexpandable = array('aria-expanded' => in_array('collapsed', $liclasses) ? "false" : "true");
-            } else if ($hasicon) {
-                $liclasses[] = 'item_with_icon';
-            }
-            if ($item->isactive === true) {
-                $liclasses[] = 'current_branch';
-            }
-            $liattr = array('class' => join(' ',$liclasses)) + $liexpandable;
-            // class attribute on the div item which only contains the item content
-            $divclasses = array('tree_item');
-            if ($isbranch) {
-                $divclasses[] = 'branch';
+            // djsomers - do not show children of hidden items (e.g. hidden courses)
+            if($item->hidden) {
+                
             } else {
-                $divclasses[] = 'leaf';
+                // this applies to the li item which contains all child lists too
+                $liclasses = array($item->get_css_type(), 'depth_'.$depth);
+                $liexpandable = array();
+                if ($item->has_children() && (!$item->forceopen || $item->collapse)) {
+                    $liclasses[] = 'collapsed';
+                }
+                if ($isbranch) {
+                    $liclasses[] = 'contains_branch';
+                    $liexpandable = array('aria-expanded' => in_array('collapsed', $liclasses) ? "false" : "true");
+                } else if ($hasicon) {
+                    $liclasses[] = 'item_with_icon';
+                }
+                if ($item->isactive === true) {
+                    $liclasses[] = 'current_branch';
+                }
+                $liattr = array('class' => join(' ',$liclasses)) + $liexpandable;
+                // class attribute on the div item which only contains the item content
+                $divclasses = array('tree_item');
+                if ($isbranch) {
+                    $divclasses[] = 'branch';
+                } else {
+                    $divclasses[] = 'leaf';
+                }
+                if ($hasicon) {
+                    $divclasses[] = 'hasicon';
+                }
+                if (!empty($item->classes) && count($item->classes)>0) {
+                    $divclasses[] = join(' ', $item->classes);
+                }
+                $divattr = array('class'=>join(' ', $divclasses));
+                if (!empty($item->id)) {
+                    $divattr['id'] = $item->id;
+                }
+                $content = html_writer::tag('p', $content, $divattr);
+                if ($isexpandable) {
+                    $content .= $this->navigation_node($item->children, array(), $expansionlimit, $options, $depth+1);
+                }
+                if (!empty($item->preceedwithhr) && $item->preceedwithhr===true) {
+                    $content = html_writer::empty_tag('hr') . $content;
+                }
             }
-            if ($hasicon) {
-                $divclasses[] = 'hasicon';
-            }
-            if (!empty($item->classes) && count($item->classes)>0) {
-                $divclasses[] = join(' ', $item->classes);
-            }
-            $divattr = array('class'=>join(' ', $divclasses));
-            if (!empty($item->id)) {
-                $divattr['id'] = $item->id;
-            }
-            $content = html_writer::tag('p', $content, $divattr);
-            if ($isexpandable) {
-                $content .= $this->navigation_node($item->children, array(), $expansionlimit, $options, $depth+1);
-            }
-            if (!empty($item->preceedwithhr) && $item->preceedwithhr===true) {
-                $content = html_writer::empty_tag('hr') . $content;
-            }
+            
             $content = html_writer::tag('li', $content, $liattr);
            
             // djsomers - if in the context of a course - only show the active course

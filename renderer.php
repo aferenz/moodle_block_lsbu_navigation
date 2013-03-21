@@ -201,7 +201,9 @@ class block_lsbu_navigation_renderer extends plugin_renderer_base {
                 // for students do not create a link from hidden items but still display the item
                 // e.g. hidden courses are not navigable
                 if($item->hidden && $this->isStudent($USER->username)==true) {
-                    $content = $title;
+                    $content = html_writer::start_tag('a', array('class'=>$attributes['class']));
+                    $content .= $title;
+                    $content .= html_writer::end_tag('a');
                 } else {
                     $content = html_writer::link($item->action, $title, $attributes);
                 }

@@ -23,6 +23,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+require_once($CFG->dirroot . '/local/lsbu_api/lib.php');
+
 class block_lsbu_navigation extends block_base {
 
     /** @var string The name of the block */

@@ -15,20 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Form for editing global navigation instances.
+ * Form for editing LSBU navigation instances.
  *
- * @since     2.0
- * @package   block_navigation
- * @copyright 2009 Sam Hemelryk
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-/**
- * Form for editing global navigation instances.
- *
- * @package   block_navigation
- * @category  navigation
- * @copyright 2009 Sam Hemelryk
+ * @package   block_lsbu_navigation
+ * @copyright 2013 University of London Computer Centre
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_lsbu_navigation_edit_form extends block_edit_form {

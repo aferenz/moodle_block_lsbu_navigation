@@ -48,7 +48,7 @@ $string['faculty-offices-hsc'] = 'HSC Faculty Offices';
 $string['faculty-offices-ldc'] = 'LDC Faculty Offices';
 $string['missingamodule'] = 'Missing a module?';
 
-$string['lsbu_navigation:addinstance'] = 'Add a new logged in user block';
-$string['lsbu_navigation:myaddinstance'] = 'Add a new logged in user block to the My Moodle page';
+$string['lsbu_navigation:addinstance'] = 'Add a new LSBU navigation block';
+$string['lsbu_navigation:myaddinstance'] = 'Add a new LSBU navigation block to the My Moodle page';
 
 

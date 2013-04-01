@@ -115,6 +115,44 @@ class block_lsbu_navigation extends block_base {
     }
     
     /**
+     * Gets Javascript that may be required for navigation
+     */
+    function get_required_javascript() {
+        global $CFG;
+        user_preference_allow_ajax_update('docked_block_instance_'.$this->instance->id, PARAM_INT);
+        $this->page->requires->js_module('core_dock');
+        $limit = 20;
+        if (!empty($CFG->navcourselimit)) {
+            $limit = $CFG->navcourselimit;
+        }
+        $expansionlimit = 0;
+        if (!empty($this->config->expansionlimit)) {
+            $expansionlimit = $this->config->expansionlimit;
+        }
+        $arguments = array(
+                'id'             => $this->instance->id,
+                'instance'       => $this->instance->id,
+                'candock'        => $this->instance_can_be_docked(),
+                'courselimit'    => $limit,
+                'expansionlimit' => $expansionlimit
+        );
+        $this->page->requires->string_for_js('viewallcourses', 'moodle');
+        $this->page->requires->yui_module(array('core_dock', 'moodle-block_lsbu_navigation-lsbu_navigation'), 'M.block_lsbu_navigation.init_add_tree', array($arguments));
+    }
+    
+    /**
+     * Returns the navigation
+     *
+     * @return navigation_node The navigation object to display
+     */
+    protected function get_navigation() {
+        // Initialise (only actually happens if it hasn't already been done yet)
+        $lsbu_api = lsbu_api::getInstance();
+        
+        return $lsbu_api->get_lsbu_navigation($this->page);
+    }
+    
+    /**
      * Gets the content for this block by grabbing it from $this->page
      *
      * @return object $this->content
@@ -126,6 +164,11 @@ class block_lsbu_navigation extends block_base {
             return $this->content;
         }
         
+        // Get the navigation object or don't display the block if none provided.
+        if (!$navigation = $this->get_navigation()) {
+            return null;
+        }
+        
         $this->content = new stdClass();
         $this->content->text = '';
         $this->content->footer = '';
@@ -133,45 +176,37 @@ class block_lsbu_navigation extends block_base {
         // Construct an array containing the different elements that make up the block's content
         $content = array();
         
-       if(!empty($USER->id) && $COURSE->id==1) {
-           $content[] = $this->get_personal_info();
+        // Personal details
+        if(!empty($USER->id) && $COURSE->id==1) {
+            $content[] = $this->get_personal_info();
+        }   
+        
+        $expansionlimit = null;
+        if (!empty($this->config->expansionlimit)) {
+            $expansionlimit = $this->config->expansionlimit;
+            $navigation->set_expansion_limit($this->config->expansionlimit);
         }
-        /*
-         Structure output tree for internal courses...
         
-        Current Year (12/13)
-        |
-        --- Courses
-        |
-        --- Modules
-        |
-        --- Student support
+        // Get the expandable items so we can pass them to JS
+        $expandable = array();
+        $navigation->find_expandable($expandable);
+        if ($expansionlimit) {
+            foreach ($expandable as $key=>$node) {
+                if ($node['type'] > $expansionlimit && !($expansionlimit == navigation_node::TYPE_COURSE && $node['type'] == $expansionlimit && $node['branchid'] == SITEID)) {
+                    unset($expandable[$key]);
+                }
+            }
+        }
         
-        Previous Year (11/12)
-        |
-        --- Courses
-        |
-        --- Modules
-        */
+        $this->page->requires->data_for_js('lsbu_navtreeexpansions'.$this->instance->id, $expandable);
         
-        $moodle_courses = enrol_get_all_users_courses($USER->id, true, 'id, shortname, modinfo, sectioncache');
+        $options = array();
+        $options['linkcategories'] = (!empty($this->config->linkcategories) && $this->config->linkcategories == 'yes');
         
-        // We contruct a multidimentional array of academic years, modules and courses
-        $course_tree = array();
+        // Grab the items to display
+        $renderer = $this->page->get_renderer($this->blockname);
+        $content[] = $renderer->navigation_tree($navigation, $expansionlimit, $options);
         
-        $lsbu_api = lsbu_api::getInstance();
-        
-        $course_tree = $lsbu_api->get_raw_course_tree($moodle_courses);
-        
-        $renderer = $this->page->get_renderer('block_lsbu_navigation');
-        
-        $renderer->initialise($course_tree);
-        
-        // render internal courses
-
-        // The renderer knows how to render the course hierarchy
-        $content[] = $renderer->get_rendered_hierarchy();
-
         $this->content->text = implode($content);
 
         return $this->content;

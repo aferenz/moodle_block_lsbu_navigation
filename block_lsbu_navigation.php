@@ -36,14 +36,8 @@
  */
 class block_lsbu_navigation extends block_base {
 
-    /** @var int This allows for multiple navigation trees */
-    public static $navcount;
     /** @var string The name of the block */
     public $blockname = null;
-    /** @var bool A switch to indicate whether content has been generated or not. */
-    protected $contentgenerated = false;
-    /** @var bool|null variable for checking if the block is docked*/
-    protected $docked = null;
 
     /** @var int Trim characters from the right */
     const TRIM_RIGHT = 1;
@@ -58,16 +52,7 @@ class block_lsbu_navigation extends block_base {
     function init() {
         global $CFG, $COURSE, $USER;
         $this->blockname = get_class($this);
-        
-        if(empty($USER->id)){
-            $this->title = get_string('pluginname', $this->blockname);
-        } else {
-            if($COURSE->id==1) {
-                $this->title = get_string('personal_details','block_lsbu_navigation');
-            } else {
-                $this->title = get_string('pluginname', $this->blockname);
-            }
-        }
+        $this->title = get_string('pluginname', $this->blockname);
     }
 
     /**
@@ -75,7 +60,7 @@ class block_lsbu_navigation extends block_base {
      * @return bool Returns false
      */
     function instance_allow_multiple() {
-        return false;
+        return true;
     }
 
     /**
@@ -113,112 +98,81 @@ class block_lsbu_navigation extends block_base {
         return (parent::instance_can_be_docked() && (empty($this->config->enabledock) || $this->config->enabledock=='yes'));
     }
 
-    /**
-     * Gets Javascript that may be required for navigation
-     */
-    function get_required_javascript() {
-        global $CFG;
-        user_preference_allow_ajax_update('docked_block_instance_'.$this->instance->id, PARAM_INT);
-        $this->page->requires->js_module('core_dock');
-        $limit = 20;
-        if (!empty($CFG->navcourselimit)) {
-            $limit = $CFG->navcourselimit;
-        }
-        $expansionlimit = 0;
-        if (!empty($this->config->expansionlimit)) {
-            $expansionlimit = $this->config->expansionlimit;
-        }
-        $arguments = array(
-            'id'             => $this->instance->id,
-            'instance'       => $this->instance->id,
-            'candock'        => $this->instance_can_be_docked(),
-            'courselimit'    => $limit,
-            'expansionlimit' => $expansionlimit
-        );
-        $this->page->requires->string_for_js('viewallcourses', 'moodle');
-        $this->page->requires->yui_module(array('core_dock', 'moodle-block_navigation-navigation'), 'M.block_navigation.init_add_tree', array($arguments));
+    function get_personal_info() {
+        global $USER;
+        
+        // username firstname surname
+        $result = html_writer::start_tag('div', array('class'=>'username'));
+        $result .= $USER->username . ' (' . $USER->firstname . ', ' . $USER->lastname . ')';
+        $result .= html_writer::end_tag('div');
+        
+        // student id / staff number
+        $result .= html_writer::start_tag('div', array('class'=>'idnumber'));
+        $result .= $USER->idnumber;
+        $result .= html_writer::end_tag('div');
+        
+        return $result;
     }
-
+    
     /**
      * Gets the content for this block by grabbing it from $this->page
      *
      * @return object $this->content
      */
     function get_content() {
-        global $CFG, $OUTPUT;
-        // First check if we have already generated, don't waste cycles
-        if ($this->contentgenerated === true) {
+        global $USER, $COURSE, $OUTPUT;
+        
+        if($this->content !== NULL) {
             return $this->content;
         }
-        // JS for navigation moved to the standard theme, the code will probably have to depend on the actual page structure
-        // $this->page->requires->js('/lib/javascript-navigation.js');
-        // Navcount is used to allow us to have multiple trees although I dont' know why
-        // you would want two trees the same
-
-        block_lsbu_navigation::$navcount++;
-
-        // Check if this block has been docked
-        if ($this->docked === null) {
-            $this->docked = get_user_preferences('nav_in_tab_panel_globalnav'.block_lsbu_navigation::$navcount, 0);
-        }
-
-        // Check if there is a param to change the docked state
-        if ($this->docked && optional_param('undock', null, PARAM_INT)==$this->instance->id) {
-            unset_user_preference('nav_in_tab_panel_globalnav'.block_lsbu_navigation::$navcount);
-            $url = $this->page->url;
-            $url->remove_params(array('undock'));
-            redirect($url);
-        } else if (!$this->docked && optional_param('dock', null, PARAM_INT)==$this->instance->id) {
-            set_user_preferences(array('nav_in_tab_panel_globalnav'.block_lsbu_navigation::$navcount=>1));
-            $url = $this->page->url;
-            $url->remove_params(array('dock'));
-            redirect($url);
-        }
-
-        $trimmode = self::TRIM_LEFT;
-        $trimlength = 50;
-
-        if (!empty($this->config->trimmode)) {
-            $trimmode = (int)$this->config->trimmode;
-        }
-
-        if (!empty($this->config->trimlength)) {
-            $trimlength = (int)$this->config->trimlength;
-        }
-
-        // Initialise (only actually happens if it hasn't already been done yet
-        $this->page->navigation->initialise();
-        $navigation = clone($this->page->navigation);
-        $expansionlimit = null;
-        if (!empty($this->config->expansionlimit)) {
-            $expansionlimit = $this->config->expansionlimit;
-            $navigation->set_expansion_limit($this->config->expansionlimit);
-        }
-        $this->trim($navigation, $trimmode, $trimlength, ceil($trimlength/2));
-
-        // Get the expandable items so we can pass them to JS
-        $expandable = array();
-        $navigation->find_expandable($expandable);
-        if ($expansionlimit) {
-            foreach ($expandable as $key=>$node) {
-                if ($node['type'] > $expansionlimit && !($expansionlimit == navigation_node::TYPE_COURSE && $node['type'] == $expansionlimit && $node['branchid'] == SITEID)) {
-                    unset($expandable[$key]);
-                }
-            }
-        }
-
-        $this->page->requires->data_for_js('navtreeexpansions'.$this->instance->id, $expandable);
-
-        $options = array();
-        $options['linkcategories'] = (!empty($this->config->linkcategories) && $this->config->linkcategories == 'yes');
-
-        // Grab the items to display
-        $renderer = $this->page->get_renderer('block_lsbu_navigation');
+        
         $this->content = new stdClass();
-        $this->content->text = $renderer->navigation_tree($navigation, $expansionlimit, $options);
+        $this->content->text = '';
+        $this->content->footer = '';
+        
+        // Construct an array containing the different elements that make up the block's content
+        $content = array();
+        
+       if(!empty($USER->id) && $COURSE->id==1) {
+           $content[] = $this->get_personal_info();
+        }
+        /*
+         Structure output tree for internal courses...
+        
+        Current Year (12/13)
+        |
+        --- Courses
+        |
+        --- Modules
+        |
+        --- Student support
+        
+        Previous Year (11/12)
+        |
+        --- Courses
+        |
+        --- Modules
+        */
+        
+        $moodle_courses = enrol_get_all_users_courses($USER->id, true, 'id, shortname, modinfo, sectioncache');
+        
+        // We contruct a multidimentional array of academic years, modules and courses
+        $course_tree = array();
+        
+        $lsbu_api = lsbu_api::getInstance();
+        
+        $course_tree = $lsbu_api->get_raw_course_tree($moodle_courses);
+        
+        $renderer = $this->page->get_renderer('block_lsbu_navigation');
+        
+        $renderer->initialise($course_tree);
+        
+        // render internal courses
 
-        // Set content generated to true so that we know it has been done
-        $this->contentgenerated = true;
+        // The renderer knows how to render the course hierarchy
+        $content[] = $renderer->get_rendered_hierarchy();
+
+        $this->content->text = implode($content);
 
         return $this->content;
     }

@@ -48,6 +48,18 @@ $string['faculty-offices-hsc'] = 'HSC Faculty Offices';
 $string['faculty-offices-ldc'] = 'LDC Faculty Offices';
 $string['missingamodule'] = 'Missing a module?';
 
+// Tree headers
+$string['currentyear'] = 'Current Year {$a}';
+$string['previousyear'] = 'Previous Year {$a}';
+$string['nextyear'] = 'Next Year {$a}';
+
+$string['courses'] = 'Courses {$a}';
+$string['modules'] = 'Modules {$a}';
+$string['studentsupport'] = 'Student Support ';
+$string['support'] = 'Support';
+
+
+// Capabilities
 $string['lsbu_navigation:addinstance'] = 'Add a new LSBU navigation block';
 $string['lsbu_navigation:myaddinstance'] = 'Add a new LSBU navigation block to the My Moodle page';
 

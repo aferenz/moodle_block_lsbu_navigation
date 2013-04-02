@@ -23,7 +23,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->dirroot . '/local/lsbu_api/lib.php');
+include_once($CFG->dirroot . '/blocks/lsbu_navigation/locallib.php');
 
 class block_lsbu_navigation extends block_base {
 
@@ -96,22 +99,6 @@ class block_lsbu_navigation extends block_base {
      */
     function instance_can_be_docked() {
         return (parent::instance_can_be_docked() && (empty($this->config->enabledock) || $this->config->enabledock=='yes'));
-    }
-
-    function get_personal_info() {
-        global $USER;
-        
-        // username firstname surname
-        $result = html_writer::start_tag('div', array('class'=>'username'));
-        $result .= $USER->username . ' (' . $USER->firstname . ', ' . $USER->lastname . ')';
-        $result .= html_writer::end_tag('div');
-        
-        // student id / staff number
-        $result .= html_writer::start_tag('div', array('class'=>'idnumber'));
-        $result .= $USER->idnumber;
-        $result .= html_writer::end_tag('div');
-        
-        return $result;
     }
     
     /**
@@ -187,10 +174,38 @@ class block_lsbu_navigation extends block_base {
         // Construct an array containing the different elements that make up the block's content
         $content = array();
         
-        // Personal details
-        if(!empty($USER->id) && $COURSE->id==1) {
-            $content[] = $this->get_personal_info();
-        }   
+        // What is the current page context?
+        $lsbu_api = lsbu_api::getInstance();
+        
+        $pageContext = $lsbu_api->get_context();
+        
+        // What extra links do we need to add?
+        switch ($pageContext) {
+            case lsbu_api::PAGECONTEXT_STUDENTLANDING:
+                $content[] = block_lsbu_navigation\locallib\getUsername();
+                $content[] = block_lsbu_navigation\locallib\getStudentNumber();
+                $content[] = block_lsbu_navigation\locallib\getMissingModuleLink();
+                $content[] = block_lsbu_navigation\locallib\getMessagingAnnouncements();
+                break;
+            case lsbu_api::PAGECONTEXT_STUDENTCOURSE:
+                // Nothing for now
+                break;
+            case lsbu_api::PAGECONTEXT_STUDENTMODULE:
+                // Nothing for now
+                break;
+            case lsbu_api::PAGECONTEXT_STAFFLANDING:
+                $content[] = block_lsbu_navigation\locallib\getUsername();
+                $content[] = block_lsbu_navigation\locallib\getStaffNumber();
+                break;
+            case lsbu_api::PAGECONTEXT_STAFFCOURSE:
+                // Nothing for now
+                break;
+            case lsbu_api::PAGECONTEXT_STAFFMODULE:
+                // Nothing for now
+                break;
+            default: // Default is to do nothing
+                break;
+        }
         
         $expansionlimit = null;
         if (!empty($this->config->expansionlimit)) {

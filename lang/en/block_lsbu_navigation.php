@@ -58,9 +58,27 @@ $string['modules'] = 'Modules {$a}';
 $string['studentsupport'] = 'Student Support ';
 $string['support'] = 'Support';
 
-
 // Capabilities
 $string['lsbu_navigation:addinstance'] = 'Add a new LSBU navigation block';
 $string['lsbu_navigation:myaddinstance'] = 'Add a new LSBU navigation block to the My Moodle page';
+
+// Tree headers
+$string['courses'] = 'Courses {$a}';
+$string['modules'] = 'Modules {$a}';
+$string['studentsupport'] = 'Student Support ';
+$string['support'] = 'Support';
+
+$string['currentyear'] = 'Current Year {$a}';
+$string['previousyear'] = 'Previous Year {$a}';
+$string['nextyear'] = 'Next Year {$a}';
+
+// Admin settings page
+$string['displayheader'] = 'Display options';
+$string['displaytype'] = 'Display';
+$string['fullname'] = 'fullname';
+$string['fullname_shortname'] = 'fullname and shortname';
+$string['fullname_idnumber'] = 'fullname and idnumber';
+$string['shortname'] = 'shortname';
+$string['idnumber'] = 'idnumber';
 
 

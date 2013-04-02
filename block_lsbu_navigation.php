@@ -61,7 +61,16 @@ class block_lsbu_navigation extends block_base {
     function applicable_formats() {
         return array('all' => true);
     }
-
+    
+    /**
+     * allow the block to have a configuration page
+     *
+     * @return boolean
+     */
+    public function has_config() {
+        return true;
+    }
+    
     /**
      * Allow the user to configure a block instance
      * @return bool Returns true
@@ -155,6 +164,17 @@ class block_lsbu_navigation extends block_base {
             return $this->content;
         }
         
+        $trimmode = self::TRIM_LEFT;
+        $trimlength = 50;
+        
+        if (!empty($this->config->trimmode)) {
+            $trimmode = (int)$this->config->trimmode;
+        }
+        
+        if (!empty($this->config->trimlength)) {
+            $trimlength = (int)$this->config->trimlength;
+        }
+        
         // Get the navigation object or don't display the block if none provided.
         if (!$navigation = $this->get_navigation()) {
             return null;
@@ -177,6 +197,7 @@ class block_lsbu_navigation extends block_base {
             $expansionlimit = $this->config->expansionlimit;
             $navigation->set_expansion_limit($this->config->expansionlimit);
         }
+        $this->trim($navigation, $trimmode, $trimlength, ceil($trimlength/2));
         
         // Get the expandable items so we can pass them to JS
         $expandable = array();

@@ -74,7 +74,7 @@ function getMissingModuleLink() {
 function getMessagingAnnouncements() {
     global $CFG;
     
-    $result = \html_writer::link($CFG->wwwroot.'/message/index.php?viewing=recentnotifications', get_string('message_announcements', 'block_lsbu_navigation'), array('class' => 'announcements'));
+    $result = \html_writer::link($CFG->wwwroot.'/message/index.php?viewing=recentnotifications', get_string('message_announcements', 'block_lsbu_navigation'), array('class' => 'announcements', 'target' => '_blank'));
     $result = \html_writer::tag('div', $result, array('id' => 'messaging_announcements'));
     
     return $result;

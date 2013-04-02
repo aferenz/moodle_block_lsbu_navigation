@@ -54,17 +54,31 @@ function getStaffNumber() {
 }
 
 function getMissingModuleLink() {
+    global $USER;
+    
     $result = '';
     
-    // custom links - return all links for now but we can obtain faculty from API???
+    // custom links - we can obtain faculty from API rather than by looking in the $USER object???
     
-    $result .= \html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-ahs', get_string('faculty-offices-ahs', 'block_lsbu_navigation'),array('class' => 'external_link', 'target' => '_blank'));
-    $result .= \html_writer::empty_tag('br');
-    $result .= \html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-bus', get_string('faculty-offices-bus', 'block_lsbu_navigation'),array('class' => 'external_link', 'target' => '_blank'));
-    $result .= \html_writer::empty_tag('br');
-    $result .= \html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-esbe', get_string('faculty-offices-esbe', 'block_lsbu_navigation'),array('class' => 'external_link', 'target' => '_blank'));
-    $result .= \html_writer::empty_tag('br');
-    $result .= \html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-hsc', get_string('faculty-offices-hsc', 'block_lsbu_navigation'),array('class' => 'external_link', 'target' => '_blank'));
+    switch($USER->institution) {
+        case "AHS" :
+            $result .= \html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-ahs', get_string('missingamodule', 'block_lsbu_navigation'),array('class' => 'external_link', 'target' => '_blank'));
+            break;
+        case "BUS" :
+            $result .= \html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-bus', get_string('missingamodule', 'block_lsbu_navigation'),array('class' => 'external_link', 'target' => '_blank'));
+            break;
+        case "ESBE" :
+            $result .= \html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-esbe', get_string('missingamodule', 'block_lsbu_navigation'),array('class' => 'external_link', 'target' => '_blank'));                            
+            break;
+        case "HSC" :
+            $result .= \html_writer::link('https://my.lsbu.ac.uk/page/faculty-offices-hsc', get_string('missingamodule', 'block_lsbu_navigation'),array('class' => 'external_link', 'target' => '_blank'));                            
+            break;
+        case "LDC" :
+            $result .= \html_writer::link('https://my.lsbu.ac.uk/page/communication-skills-development-contact-us', get_string('missingamodule', 'block_lsbu_navigation'),array('class' => 'external_link', 'target' => '_blank'));                           
+            break;
+        default:
+            break;
+    }
     
     $result = \html_writer::tag('div', $result, array('id' => 'faculty_links'));
     

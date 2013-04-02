@@ -81,4 +81,13 @@ $string['fullname_idnumber'] = 'fullname and idnumber';
 $string['shortname'] = 'shortname';
 $string['idnumber'] = 'idnumber';
 
+// Personal details
+$string['message_announcements'] = 'Message announcements';
+$string['faculty-offices-ahs'] = 'AHS Faculty Offices';
+$string['faculty-offices-bus'] = 'BUS Faculty Offices';
+$string['faculty-offices-esbe'] = 'ESBE Faculty Offices';
+$string['faculty-offices-hsc'] = 'HSC Faculty Offices';
+$string['staff_number_not_found'] = 'Staff ID missing';
+$string['student_number_not_found'] = 'Student ID missing';
+
 

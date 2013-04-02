@@ -24,7 +24,7 @@ require_once $CFG->dirroot.'/local/lsbu_api/lib.php';
 function getUsername() {
     global $USER;
     
-    $result = \html_writer::tag('div', s($USER->username).'('.s($USER->firstname).','.s($USER->lastname).')', array('id' => 'username'));
+    $result = \html_writer::tag('div', s($USER->username).' ('.s($USER->firstname).','.s($USER->lastname).')', array('id' => 'username'));
     
     return $result;
 }

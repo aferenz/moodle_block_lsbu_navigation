@@ -320,6 +320,9 @@ BRANCH.prototype = {
             if (branchicon) {
                 branchp.appendChild(branchicon);
             }
+            if (this.get('hidden')) {
+                branchp.addClass('dimmed');
+            }
             branchp.append(this.get('name'));
         } else {
             var branchlink = Y.Node.create('<a title="'+this.get('title')+'" href="'+link+'"></a>');
@@ -547,10 +550,14 @@ M.block_lsbu_navigation = M.block_lsbu_navigation || {
     expandablebranchcount:1,
     courselimit : 20,
     instance : null,
+    
     /**
      * Add new instance of navigation tree to tree collection
      */
     init_add_tree:function(properties) {
+    	var node = Y.one('#inst'+properties.id);
+    	
+    	
         if (properties.courselimit) {
             this.courselimit = properties.courselimit;
         }
@@ -558,6 +565,8 @@ M.block_lsbu_navigation = M.block_lsbu_navigation || {
             M.core_dock.init(Y);
         }
         new TREE(properties);
+        
+        //postprocess(node);
     }
 };
 

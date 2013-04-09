@@ -57,6 +57,7 @@ $string['courses'] = 'Courses {$a}';
 $string['modules'] = 'Modules {$a}';
 $string['studentsupport'] = 'Student Support ';
 $string['support'] = 'Support';
+$string['othercourses'] = 'Other Courses';
 
 $string['currentyear'] = 'Current Year {$a}';
 $string['previousyear'] = 'Previous Year {$a}';
